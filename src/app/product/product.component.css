@@ -1,0 +1,11 @@
+
+button:hover {
+    color: burlywood;
+}
+button:active {
+    color: purple;
+}
+button.current{
+    color: brown;
+    text-decoration:underline;
+}
