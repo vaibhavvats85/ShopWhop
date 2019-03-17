@@ -6,6 +6,9 @@ import {
 } from 'angular-6-social-login';
 import { FirstService } from 'services/first.service';
 import { CookieService } from 'ngx-cookie-service';
+import { Store } from '@ngrx/store';
+import * as fromActions from '../store/action'
+import * as fromReducer from '../store/reducer'
 
 @Component({
   selector: 'app-signin',
@@ -14,47 +17,22 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class SigninComponent {
   data: any = '';
-  msg = ""
-  sign = ''
+  msg = '';
+  sign = '';
   cookieValue = 'UNKNOWN';
 
   //Router-Lets you link to specific routes in your app.
   //ActivatedRoute-Contains the information about a route associated with a component loaded in an outlet.
   //FirstService-Access service methods.
-  constructor(private socialAuthService: AuthService, private firstservice: FirstService, private cookieService: CookieService) { }
+  constructor(private socialAuthService: AuthService, private firstservice: FirstService, private cookieService: CookieService, private store$:Store<fromReducer.SignInState>) { }
 
-
-  //Sign in for Gmail Account
-  public socialSignIn(socialPlatform: string) {
-    let socialPlatformProvider = '';
-    if (socialPlatform == "google") {
-      socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
-    }
-
-    this.socialAuthService.signIn(socialPlatformProvider).then(
-      (userData) => {
-        this.data = userData;
-
-        localStorage.setItem('currentUser', JSON.stringify(this.data));
-        if (localStorage.getItem('currentUser') != undefined) {
-          this.msg = "Thanks " + this.data.name + ". You're successfully Logged in."
-          this.sign=''
-        }
-        // Now sign-in with userData
-        // ...     
-      }
-    );
-
-
-
-
+  public InitiateSignIn(){
+    this.store$.dispatch(new fromActions.SignIn("google"));
   }
-
-
-  //Sign Out Gmail Account
+  
   socialSignOut() {
-
-    localStorage.removeItem('currentUser');
+    localStorage.clear();
+    sessionStorage.clear();
     if (localStorage.getItem('currentUser') == undefined)
       this.sign = 'You are successfully logged out'
       this.msg=''
